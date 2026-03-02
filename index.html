@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>40 steps · interactive orgasm guide (OK voice)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    }
+    body {
+      background: #120c1f;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem;
+    }
+    .artifact {
+      max-width: 860px;
+      width: 100%;
+      background: rgba(20, 15, 35, 0.9);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid #4a3f70;
+      border-radius: 2.8rem;
+      padding: 2rem 1.8rem;
+      box-shadow: 0 30px 50px -15px #000000cc, 0 0 0 1px #7a6cac inset;
+      color: #ede7ff;
+    }
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+    }
+    .header h1 {
+      font-weight: 400;
+      font-size: 1.9rem;
+      background: linear-gradient(130deg, #f0eaff, #cfbaff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .badge {
+      background: #2f2650;
+      border-radius: 40px;
+      padding: 0.3rem 1.2rem;
+      border: 1px solid #7f6eb0;
+      color: #d0c2ff;
+      font-size: 0.9rem;
+    }
+    .mic-panel {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      background: #1b1430;
+      padding: 0.6rem 1.2rem;
+      border-radius: 4rem;
+      margin: 0.8rem 0 1.2rem;
+      border: 1px solid #5e4e8a;
+    }
+    .mic-btn {
+      background: #231d3a;
+      border: 1px solid #7c64b0;
+      color: #ddd0ff;
+      padding: 0.5rem 1.5rem;
+      border-radius: 3rem;
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .mic-btn.active {
+      background: #3f3170;
+      border-color: #b69eff;
+      color: white;
+      box-shadow: 0 0 12px #9f85ff;
+    }
+    .led {
+      width: 12px;
+      height: 12px;
+      border-radius: 20px;
+      background: #6c5b8e;
+    }
+    .active .led {
+      background: #adff9e;
+      box-shadow: 0 0 12px #79ffa0;
+    }
+    .last-cmd {
+      background: #0f0b1c;
+      border-radius: 3rem;
+      padding: 0.4rem 1.2rem;
+      font-size: 0.9rem;
+      color: #cbbaff;
+      border: 1px solid #4f3f7a;
+      flex: 1;
+      min-width: 180px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .size-module {
+      background: #1a1330e5;
+      border-radius: 3rem;
+      padding: 1rem 1.6rem;
+      margin: 1.2rem 0 1.8rem;
+      border: 1px solid #65529b;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.8rem;
+    }
+    .size-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #b3a2ec;
+    }
+    .size-choices {
+      display: flex;
+      gap: 1rem;
+    }
+    .size-dot {
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 4rem;
+      background: #252042;
+      border: 2px solid #544686;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #b4a2ec;
+      transition: 0.1s;
+      cursor: default;
+    }
+    .size-dot.active {
+      background: #57439b;
+      border-color: #dac3ff;
+      color: white;
+      box-shadow: 0 0 18px #b073ff;
+    }
+    .nav-row {
+      display: flex;
+      gap: 0.8rem;
+      margin: 1.2rem 0 1rem;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      background: #201d3a;
+      border: 1px solid #6551a2;
+      color: #e3d6ff;
+      padding: 0.5rem 1.4rem;
+      border-radius: 2.5rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .nav-btn:hover {
+      background: #352e58;
+      border-color: #9379e6;
+    }
+    .step-indicator {
+      background: #1d1738;
+      padding: 0.3rem 1.5rem;
+      border-radius: 3rem;
+      border: 1px solid #6b579e;
+      font-weight: 500;
+      margin-left: auto;
+    }
+    .task-container {
+      background: #0f0b20b3;
+      border-radius: 2rem;
+      padding: 0.4rem 0.2rem;
+      border: 1px solid #5b4790;
+      max-height: 370px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #6f5baa #231d3b;
+      margin: 1.2rem 0;
+    }
+    .task-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    .task-container::-webkit-scrollbar-track {
+      background: #231d3b;
+      border-radius: 20px;
+    }
+    .task-container::-webkit-scrollbar-thumb {
+      background: #6f5baa;
+      border-radius: 20px;
+    }
+    .task-item {
+      display: flex;
+      align-items: center;
+      padding: 0.7rem 1rem 0.7rem 0.8rem;
+      margin: 0.2rem 0.5rem;
+      border-radius: 2.5rem;
+      transition: 0.1s;
+      border: 1px solid transparent;
+    }
+    .task-item.current {
+      background: #2f2655;
+      border-color: #aa92f0;
+      box-shadow: 0 0 0 1px #b79eff inset;
+    }
+    .task-item input[type="checkbox"] {
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: #aa92ff;
+      margin-right: 1rem;
+      pointer-events: all;
+    }
+    .task-item label {
+      color: #f0e8ff;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      flex: 1;
+      cursor: default;
+    }
+    .step-num {
+      background: #28224b;
+      border-radius: 2rem;
+      padding: 0.2rem 0.8rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #bbaef0;
+      margin-right: 0.8rem;
+      border: 1px solid #6552a5;
+    }
+    .footer-hint {
+      background: #161029;
+      border-radius: 2.5rem;
+      padding: 1rem 1.5rem;
+      margin-top: 1.5rem;
+      border: 1px solid #584a84;
+      font-size: 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      justify-content: space-between;
+    }
+    .hint-commands kbd {
+      background: #312951;
+      padding: 0.2rem 0.9rem;
+      border-radius: 2rem;
+      color: #d9caff;
+      border: 1px solid #7a66b5;
+      margin: 0 0.2rem;
+    }
+    .say-ok {
+      color: #ffd78a;
+      background: #3f2e1f;
+      padding: 0.3rem 1.2rem;
+      border-radius: 3rem;
+      border: 1px solid #b58d47;
+      font-weight: 600;
+    }
+    .footer-credit {
+      text-align: center;
+      margin-top: 1rem;
+      color: #5c4f82;
+      font-size: 0.8rem;
+    }
+    .reset-btn {
+      background: #391f3c;
+      border-color: #a05a9e;
+    }
+  </style>
+</head>
+<body>
+<div class="artifact">
+  <div class="header">
+    <h1>40·steps · OK voice</h1>
+    <span class="badge">David Gomadza</span>
+  </div>
+
+  <!-- mic + last command -->
+  <div class="mic-panel">
+    <button class="mic-btn" id="micButton">
+      <span class="led" id="micLed"></span>
+      <span id="micText">start mic</span>
+    </button>
+    <div class="last-cmd" id="lastCommand">🎤 say "OK" ...</div>
+  </div>
+
+  <!-- size selector (voice + manual) -->
+  <div class="size-module">
+    <div class="size-label"><span style="font-size:1.3rem;">⚙️</span> intensity size</div>
+    <div class="size-choices">
+      <div class="size-dot" id="sizeSmall">S</div>
+      <div class="size-dot active" id="sizeMedium">M</div>
+      <div class="size-dot" id="sizeLarge">L</div>
+    </div>
+  </div>
+
+  <!-- manual navigation -->
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn">◀ previous</button>
+    <button class="nav-btn" id="nextBtn">next ▶</button>
+    <button class="nav-btn reset-btn" id="resetBtn">⟲ reset all</button>
+    <span class="step-indicator" id="currentStepLabel">step 1/40</span>
+  </div>
+
+  <!-- dynamic 40-step list (scrollable) -->
+  <div class="task-container" id="taskList"></div>
+
+  <!-- voice hints & footer -->
+  <div class="footer-hint">
+    <div class="hint-commands">
+      <span class="say-ok">OK</span>
+      <kbd>size small/medium/large</kbd>
+      <kbd>next</kbd>
+      <kbd>previous</kbd>
+      <kbd>check step 4</kbd>
+      <kbd>uncheck step 7</kbd>
+      <kbd>focus step 2</kbd>
+    </div>
+    <div><kbd>reset all</kbd> <kbd>forward</kbd> <kbd>back</kbd></div>
+  </div>
+  <div class="footer-credit">
+    ⏺️ interactive artifact · based on 40 steps guide · voice requires "ok" prefix
+  </div>
+</div>
+
+<script>
+(function() {
+  // ---------- 40 steps from the PDF (pages 28-30) ----------
+  const steps = [
+    "1) Look at her in the eyes first and enter the spirit world with her by constantly eyeing her especially the right eye with your left eye.",
+    "2) Touch the top of her right hand once with your left hand.",
+    "3) Ask what if and stop.",
+    "4) Ask if then then what and stop.",
+    "5) Look at her in the eyes and whisper her name first and ask what if and stop.",
+    "6) Ask if she respond to you but don't expect an answer.",
+    "7) Ask if she knew all this and stop.",
+    "8) Ask if she has experience and stop.",
+    "9) Ask if she find but don't finish the line instead try to kiss her on the cheek but again stop this time hold her left hand and kiss it passionate and curse [damn woman why everything is like slow] and establish eye contact - your left eye in her right eye - smile very much and release all air inside you.",
+    "10) kiss her forehead and say sorry you are fast I thought you are slow [but with enthusiasm] say you are the fastest but stop.",
+    "11) Check your hand wrist watch and look away.",
+    "12) Ask what time she think it is actually saying guess? Now keep quiet and just listen to her as if you are cooking a pressure cooker meal.",
+    "13) Check time one more time and frown but say something else.",
+    "14) Now pat her back earnestly and start stroking her left hand all the way from the armpit to the finger tips and each time ask how fast this can be but ask as if you are asking how fast you can stroke her arm and nothing to do with sex.",
+    "15) Suggest you stroke faster as a question.",
+    "16) Say food is ready but don't salivate.",
+    "17) Say ok I am coming at the right time.",
+    "18) Pinch her inner left hand and say oh beautiful.",
+    "19) Turn to check the inside palm of her hand and say oh beautiful I didn't know but stop.",
+    "20) Say oh cheers I can celebrate to this.",
+    "21) Imagine rubbing her nipples all at the same time and say simply put hot.",
+    "22) Say if I didn't put then I would have understood why but stop.",
+    "23) Now ask what's her favorite but stop.",
+    "24) Look at her with cravings.",
+    "25) Say how beautiful but and stop.",
+    "26) Ask what if then stop.",
+    "27) Ask what then and stop.",
+    "28) Ask if then then what.",
+    "29) Say very joyous if i had you i bet and stop.",
+    "30) Now hold her left hand but quickly drop left hand and hold right hand.",
+    "31) If you were ready this is how i would do things.",
+    "32) If you were mine but stop.",
+    "33) Not that you are not mine I am just saying that if I had power over you I would totally make everything fast and ready before you even say yes.",
+    "34) If you knew how fast I am you would not even try to change but revamp everything to original way because this is how I changed mine in that case it's a mis-match.",
+    "35) Unless then stop.",
+    "36) I underestimated you. Did i?",
+    "37) I bet I did now I know pardon my French but I am ready and waiting is not my thing.",
+    "38) I know we cannot wait that is what I am saying.",
+    "39) I am ready.",
+    "40) Are you? All this time override whatever she says with the next question."
+  ];
+
+  // ---------- state ----------
+  let currentStepIndex = 0;               // 0-based
+  let currentSize = 'medium';              // 'small', 'medium', 'large'
+  let isListening = false;
+  let recognition = null;
+  let synth = window.speechSynthesis;
+  let lastProcessedCommand = '';           // debounce
+
+  // DOM elements
+  const micBtn = document.getElementById('micButton');
+  const micText = document.getElementById('micText');
+  const micLed = document.getElementById('micLed').parentElement; // use led parent?
+  const lastCmdSpan = document.getElementById('lastCommand');
+  const sizeSmall = document.getElementById('sizeSmall');
+  const sizeMedium = document.getElementById('sizeMedium');
+  const sizeLarge = document.getElementById('sizeLarge');
+  const taskContainer = document.getElementById('taskList');
+  const currentStepSpan = document.getElementById('currentStepLabel');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  // ---------- render task list ----------
+  function renderTasks() {
+    taskContainer.innerHTML = '';
+    steps.forEach((text, idx) => {
+      const item = document.createElement('div');
+      item.className = 'task-item' + (idx === currentStepIndex ? ' current' : '');
+      item.dataset.index = idx;
+
+      const stepNum = document.createElement('span');
+      stepNum.className = 'step-num';
+      stepNum.innerText = `#${idx+1}`;
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.id = `step_${idx}`;
+      cb.checked = false;   // all start unchecked
+
+      const label = document.createElement('label');
+      label.htmlFor = `step_${idx}`;
+      label.textContent = text;
+
+      item.appendChild(stepNum);
+      item.appendChild(cb);
+      item.appendChild(label);
+      taskContainer.appendChild(item);
+    });
+    updateCurrentHighlight();
+  }
+  renderTasks();
+
+  // helper: get all task items
+  function getTaskItems() {
+    return document.querySelectorAll('.task-item');
+  }
+
+  // update .current class and step indicator
+  function updateCurrentHighlight() {
+    const items = getTaskItems();
+    items.forEach((item, idx) => {
+      if (idx === currentStepIndex) item.classList.add('current');
+      else item.classList.remove('current');
+    });
+    currentStepSpan.innerText = `step ${currentStepIndex+1}/${steps.length}`;
+    // scroll into view (smooth)
+    const active = items[currentStepIndex];
+    if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  // set checked state for a step
+  function setStepChecked(index, checked) {
+    const cb = document.getElementById(`step_${index}`);
+    if (cb) cb.checked = checked;
+  }
+
+  // check step
+  function checkStep(index) {
+    if (index >= 0 && index < steps.length) {
+      setStepChecked(index, true);
+      speak(`Step ${index+1} checked`);
+    }
+  }
+
+  function uncheckStep(index) {
+    if (index >= 0 && index < steps.length) {
+      setStepChecked(index, false);
+      speak(`Step ${index+1} unchecked`);
+    }
+  }
+
+  // set current step (highlight only)
+  function setCurrentStep(index) {
+    if (index >= 0 && index < steps.length) {
+      currentStepIndex = index;
+      updateCurrentHighlight();
+    }
+  }
+
+  // next: check current, then move to next (if any)
+  function nextStep() {
+    if (currentStepIndex < steps.length) {
+      setStepChecked(currentStepIndex, true);
+      if (currentStepIndex + 1 < steps.length) {
+        currentStepIndex++;
+        updateCurrentHighlight();
+        speak(`Step ${currentStepIndex} checked, now on step ${currentStepIndex+1}`);
+      } else {
+        speak('Last step reached');
+      }
+    }
+  }
+
+  function previousStep() {
+    if (currentStepIndex > 0) {
+      currentStepIndex--;
+      updateCurrentHighlight();
+      speak(`Now on step ${currentStepIndex+1}`);
+    } else {
+      speak('Already at first step');
+    }
+  }
+
+  // reset: uncheck all, step to 0
+  function resetAll() {
+    for (let i = 0; i < steps.length; i++) {
+      setStepChecked(i, false);
+    }
+    currentStepIndex = 0;
+    updateCurrentHighlight();
+    speak('All steps reset');
+  }
+
+  // set size
+  function setSize(size) {
+    if (!['small','medium','large'].includes(size)) return;
+    currentSize = size;
+    sizeSmall.classList.remove('active');
+    sizeMedium.classList.remove('active');
+    sizeLarge.classList.remove('active');
+    if (size === 'small') sizeSmall.classList.add('active');
+    if (size === 'medium') sizeMedium.classList.add('active');
+    if (size === 'large') sizeLarge.classList.add('active');
+    speak(`Size set to ${size}`);
+  }
+
+  // text to speech
+  function speak(text) {
+    if (!synth) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.05;
+    synth.speak(utterance);
+  }
+
+  // ---------- voice command processing (requires "ok" prefix) ----------
+  function processVoiceCommand(transcript) {
+    const lower = transcript.toLowerCase().trim();
+    lastCmdSpan.innerText = `"${lower}"`;
+
+    // MUST contain "ok" or "okay"
+    if (!lower.includes('ok') && !lower.includes('okay')) return;
+
+    // simple duplicate filter
+    if (lower === lastProcessedCommand) return;
+    lastProcessedCommand = lower;
+
+    // ---- size ----
+    if (lower.includes('size')) {
+      if (lower.includes('small')) setSize('small');
+      else if (lower.includes('medium')) setSize('medium');
+      else if (lower.includes('large')) setSize('large');
+      else speak('size not recognized');
+      return;
+    }
+
+    // ---- next / previous ----
+    if (lower.includes('next') && !lower.includes('size')) {
+      nextStep();
+      return;
+    }
+    if (lower.includes('previous') || lower.includes('prev')) {
+      previousStep();
+      return;
+    }
+
+    // ---- reset all ----
+    if (lower.includes('reset') && lower.includes('all')) {
+      resetAll();
+      return;
+    }
+
+    // ---- step number commands (check / uncheck / focus) ----
+    const numberMatch = lower.match(/\d+/);
+    if (numberMatch) {
+      let stepNum = parseInt(numberMatch[0], 10);
+      let idx = stepNum - 1;
+      if (idx >= 0 && idx < steps.length) {
+        if (lower.includes('uncheck')) {
+          uncheckStep(idx);
+          setCurrentStep(idx);
+        } else if (lower.includes('check')) {
+          checkStep(idx);
+          setCurrentStep(idx);
+        } else if (lower.includes('focus') || lower.includes('go to') || lower.includes('highlight')) {
+          setCurrentStep(idx);
+          speak(`Focus on step ${stepNum}`);
+        } else if (lower.includes('step')) {
+          // default: check it and focus (like marking complete)
+          checkStep(idx);
+          setCurrentStep(idx);
+        } else {
+          speak('command unclear. say check, uncheck, or focus');
+        }
+      } else {
+        speak(`step ${stepNum} out of range`);
+      }
+      return;
+    }
+
+    // fallback
+    speak('command not recognized. try "ok next" or "ok size medium"');
+  }
+
+  // ---------- web speech init ----------
+  try {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onresult = (event) => {
+        const last = event.results.length - 1;
+        if (last >= 0) {
+          const transcript = event.results[last][0].transcript;
+          processVoiceCommand(transcript);
+        }
+      };
+
+      recognition.onerror = (e) => {
+        console.warn(e);
+        if (e.error === 'not-allowed') {
+          isListening = false;
+          micBtn.classList.remove('active');
+          micText.innerText = 'mic blocked';
+        }
+      };
+
+      recognition.onend = () => {
+        if (isListening) {
+          try { recognition.start(); } catch (e) {}
+        }
+      };
+    } else {
+      lastCmdSpan.innerText = 'voice not supported';
+      micBtn.disabled = true;
+      micText.innerText = 'no mic';
+    }
+  } catch (e) {
+    console.log('speech init failed');
+  }
+
+  // toggle microphone
+  function toggleListening() {
+    if (!recognition) return;
+    if (isListening) {
+      try { recognition.stop(); } catch (e) {}
+      isListening = false;
+      micBtn.classList.remove('active');
+      micText.innerText = 'start mic';
+      lastCmdSpan.innerText = 'mic off';
+    } else {
+      try {
+        recognition.start();
+        isListening = true;
+        micBtn.classList.add('active');
+        micText.innerText = 'listening...';
+        lastCmdSpan.innerText = 'say "OK" ...';
+      } catch (e) {
+        alert('microphone permission needed');
+        isListening = false;
+      }
+    }
+  }
+
+  // event listeners
+  micBtn.addEventListener('click', toggleListening);
+
+  sizeSmall.addEventListener('click', () => setSize('small'));
+  sizeMedium.addEventListener('click', () => setSize('medium'));
+  sizeLarge.addEventListener('click', () => setSize('large'));
+
+  prevBtn.addEventListener('click', previousStep);
+  nextBtn.addEventListener('click', nextStep);
+  resetBtn.addEventListener('click', resetAll);
+
+  // optional: allow clicking on checkboxes manually (no speech, fine)
+  // set default size medium
+  setSize('medium');
+
+  // initial step indicator
+  updateCurrentHighlight();
+
+  // extra: manual forward/back buttons already done
+  // disable context menu on some elements (optional)
+})();
+</script>
+</body>
+</html>
